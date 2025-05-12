@@ -1,0 +1,103 @@
+
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <title>Συνοπτική Εγγραφή Πελάτη</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background-color: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 24px;
+        }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+            color: #34495e;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 16px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #3498db;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Συνοπτική Εγγραφή Πελάτη</h1>
+        <form onsubmit="event.preventDefault(); saveCustomer();">
+            <label for="customer-name">Όνομα Πελάτη:</label>
+            <input type="text" id="customer-name" required>
+
+            <label for="customer-afm">ΑΦΜ:</label>
+            <input type="text" id="customer-afm" required pattern="\d{9}" title="9 ψηφία">
+
+            <label for="customer-notes">Παρατηρήσεις:</label>
+            <textarea id="customer-notes" placeholder="Εισάγετε παρατηρήσεις..."></textarea>
+
+            <button type="submit">Αποθήκευση</button>
+        </form>
+    </div>
+
+    <script>
+        function populateFields() {
+            fetch('/customer-data')
+                .then(response => response.json())
+                .then(data => {
+                    const customer = data.CUSTOMER?.[0];
+                    if (customer) {
+                        document.getElementById('customer-name').value = customer.NAME || '';
+                        document.getElementById('customer-afm').value = customer.AFM || '';
+                    }
+                })
+                .catch(error => console.error('Σφάλμα φόρτωσης:', error));
+        }
+
+        function saveCustomer() {
+            const customer = {
+                name: document.getElementById('customer-name').value,
+                afm: document.getElementById('customer-afm').value,
+                notes: document.getElementById('customer-notes').value
+            };
+            console.log('Αποθηκεύτηκαν τα στοιχεία:', customer);
+            alert('Τα στοιχεία αποθηκεύτηκαν με επιτυχία!');
+        }
+
+        document.addEventListener('DOMContentLoaded', populateFields);
+    </script>
+</body>
+</html>
